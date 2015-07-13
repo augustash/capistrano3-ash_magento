@@ -15,9 +15,10 @@ namespace :snapshot do
       on roles(:web) do
         if test("[ -f #{fetch(:magerun_path)} ]")
           # n98-magerun exists!
-          logger.info "n98-magerun is installed!"
+          info "n98-magerun is installed!"
         else
-          logger.info "n98-magerun IS NOT INSTALLED! Trying to install n98-magerun via cURL within #{deploy_to}"
+          error "n98-magerun IS NOT INSTALLED!"
+          info "Trying to install n98-magerun via cURL within #{deploy_to}"
 
           # try to install the n98-magerun in the :deploy_to path
           within deploy_to do
