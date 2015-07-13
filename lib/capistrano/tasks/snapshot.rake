@@ -16,6 +16,9 @@ namespace :snapshot do
         if test("[ -f #{fetch(:magerun_path)} ]")
           # n98-magerun exists!
           info "n98-magerun is installed!"
+          within deploy_to do
+            execute :chmod, '+x', "#{fetch(:magerun_path)}"
+          end
         else
           error "n98-magerun IS NOT INSTALLED!"
           info "Trying to install n98-magerun via cURL within #{deploy_to}"
@@ -23,7 +26,11 @@ namespace :snapshot do
           # try to install the n98-magerun in the :deploy_to path
           within deploy_to do
             execute :curl, '-sS', "#{fetch(:magerun_download_url)}", '-o', "#{fetch(:magerun_filename)}"
-            execute :chomd, '+x', "#{fetch(:magerun_path)}"
+            execute :chmod, '+x', "#{fetch(:magerun_path)}"
+
+            if test("[ -f #{fetch(:magerun_path)} ]")
+              info "n98-magerun is now installed!"
+            end
           end
         end
       end
@@ -37,7 +44,6 @@ namespace :snapshot do
   task :create do
     on roles(:web) do
       within release_path do
-
         git_sha         = "#{capture("cd #{repo_path} && git rev-parse HEAD")}"
         datetime        = Time.now.strftime("%Y%m%d%H%M")
         filename        = "#{fetch(:snapshot_path)}/#{git_sha}_#{datetime}.sql.gz"
