@@ -21,7 +21,7 @@ namespace :snapshot do
 
           # try to install the n98-magerun in the :deploy_to path
           within deploy_to do
-            execute :curl, '-sS', fetch(:magerun_download_url), '-o', fetch(:magerun_filename)
+            execute :curl, '-sS', "#{fetch(:magerun_download_url)}", '-o', "#{fetch(:magerun_filename)}"
           end
         end
       end
